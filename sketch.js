@@ -5,7 +5,7 @@ var gameState=1;
 
 var knife;
 var knifeImage,fruit1,fruit2,fruit3,fruit4,alien1,alien2,
-    gameOver_Img,gameOverSound,knifeSound;
+    gameOver_Img,gameOverSound,knifeSound,backgroundImg,score;
 
 
 function preload(){
@@ -23,19 +23,21 @@ function preload(){
   
   gameOverSound = loadSound("gameover.mp3");
   knifeSound = loadSound("knifeSwoosh.mp3");
+  
+  backgroundImg = loadImage("1781.jpg");
 }
 
 
 
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(windowWidth, windowHeight);
   
   //creating sword
-   knife=createSprite(40,200,20,20);
+   knife=createSprite(windowWidth/2,200,20,20);
    knife.addImage(knifeImage);
    knife.scale=0.7
   
-   gameOver = createSprite(300,300,20,20);
+   gameOver = createSprite(windowWidth/2,300,20,20);
    gameOver.addImage(gameOver_Img);
    gameOver.visible = false;
   
@@ -49,12 +51,13 @@ function setup() {
 }
 
 function draw() {
-  background("lightblue");
+  background(backgroundImg);
   
   drawSprites();
   
   //Display score
   textSize(25);
+  fill("red")
   text("Score : "+ score,250,50);
   
   
@@ -63,6 +66,7 @@ function draw() {
     //calling fruit and monster function
     Fruit();
     Monster();
+    camera0();
     
     // Move knife with mouse
     knife.y=World.mouseY;
@@ -71,6 +75,7 @@ function draw() {
     // Increase score if knife touching fruit
    if(knife.isTouching(FruitG)){
      score = score + 2;
+     
      
      FruitG.destroyEach();
      knifeSound.play();
@@ -102,8 +107,8 @@ function draw() {
 
 
 function Fruit(){
-  if(World.frameCount % 80 === 0){
-  var fruit = createSprite(400,200,20,20);
+  if(World.frameCount % 60 === 0){
+  var fruit = createSprite(windowWidth,windowHeight,20,20);
     fruit.scale = 0.2;
     
     r = Math.round(random(1,4));
@@ -118,7 +123,7 @@ function Fruit(){
     }
     
     
-    fruit.y = Math.round(random(50,340));
+    fruit.y = Math.round(random(windowHeight,340));
   
   fruit.velocityX = -(7 + (score/4));
   fruit.setLifetime = 100;
@@ -128,7 +133,7 @@ function Fruit(){
   position = Math.round(random(1,2));
     
     if(position == 1){
-      fruit.x = 600;
+      fruit.x = windowWidth + 300;
     }
   }
 }
@@ -136,8 +141,8 @@ function Fruit(){
 
 
 function Monster(){
-  if(World.frameCount % 80 === 0){
-    var monster = createSprite(400,200,20,20);
+  if(World.frameCount % 60 === 0){
+    var monster = createSprite(windowWidth,windowHeight,20,20);
     monster.scale = 0.7;
     
     r1 = Math.round(random(1,2))
@@ -148,7 +153,7 @@ function Monster(){
       monster.addImage(alien2);
     }
     
-    monster.y = Math.round(random(50,340));
+    monster.y = Math.round(random(windowHeight,340));
   
   monster.velocityX = -(8 + (score/10));
   monster.setLifetime = 100;
@@ -158,7 +163,12 @@ function Monster(){
   position = Math.round(random(1,2));
     
     if(position == 1){
-      monster.x = 600;
+      monster.x = windowWidth + 300;
     }
   }
+}
+
+function camera0(){
+  camera.position.x = knife.x;
+  camera.position.y = knife.y;
 }
